@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Currency Converter</title>
+<style>
+:root {
+    --bg-color: #f4f6f9;
+    --text-color: #333;
+    --container-bg: #fff;
+    --button-bg: #007bff;
+    --button-hover: #0056b3;
+}
+
+body.dark-mode {
+    --bg-color: #1a1a1a;
+    --text-color: #f4f6f9;
+    --container-bg: #333;
+    --button-bg: #444;
+    --button-hover: #666;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+    font-family: Arial, sans-serif;
+    background: var(--bg-color);
+    color: var(--text-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    transition: all 0.3s ease;
+}
+
+.container {
+    background: var(--container-bg);
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    width: 100%;
+    max-width: 400px;
+    position: relative;
+}
+
+h2 { text-align: center; margin-bottom: 10px; }
+form { display: flex; flex-direction: column; }
+label { margin: 8px 0 4px; font-weight: bold; }
+input, select, button {
+    padding: 12px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    font-size: 1rem;
+    width: 100%;
+    border: 1px solid #ccc;
+}
+button {
+    background: var(--button-bg);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+button:hover { background: var(--button-hover); }
+
+.error { color: #ff4d4d; text-align: center; }
+.result { text-align: center; font-weight: bold; font-size: 1.2rem; word-break: break-word; }
+
+.toggle-btn-small {
+    font-size: 0.8rem;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    background: var(--button-bg);
+    color: white;
+    border: none;
+    transition: background 0.3s ease;
+    margin-bottom: 15px;
+}
+.toggle-btn-small:hover {
+    background: var(--button-hover);
+}
+
+@media (max-width: 768px) { .container { padding: 18px; } }
+@media (max-width: 480px) { .container { padding: 15px; } input, select, button { padding: 10px; } }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h2>💱 Currency Converter</h2>
+
+    <div style="text-align: center;">
+        <button type="button" class="toggle-btn-small" onclick="toggleDarkMode()">🌓 Dark Mode</button>
+    </div>
+
+    <form method="POST">
+        <label>From:</label>
+        <select name="from_currency" required>
+            {% for code, name in currencies.items() %}
+            <option value="{{ code }}" {% if code==frm %}selected{% endif %}>{{ code }} - {{ name }}</option>
+            {% endfor %}
+        </select>
+
+        <label>To:</label>
+        <select name="to_currency" required>
+            {% for code, name in currencies.items() %}
+            <option value="{{ code }}" {% if code==to %}selected{% endif %}>{{ code }} - {{ name }}</option>
+            {% endfor %}
+        </select>
+
+        <label>Amount:</label>
+        <input type="number" name="amount" value="{{ amount }}" required placeholder="100">
+
+        <button type="submit">Convert</button>
+    </form>
+
+    {% if error %}
+        <p class="error">{{ error }}</p>
+    {% endif %}
+    {% if result %}
+        <p class="result">Converted Amount: {{ result }} {{ to }}</p>
+    {% endif %}
+</div>
+
+<script>
+    function toggleDarkMode() {
+        document.body.classList.toggle('dark-mode');
+        localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+    }
+
+    window.addEventListener('load', () => {
+        if (localStorage.getItem('darkMode') === 'true') {
+            document.body.classList.add('dark-mode');
+        }
+    });
+</script>
+
+</body>
+</html>
